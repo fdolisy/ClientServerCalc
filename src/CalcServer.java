@@ -35,75 +35,76 @@ class ClientHandler extends Thread {
             return "Invalid Equation: No input given";
         }
         String equation = input.trim().replaceAll("[ ]+", "");
-        if (input == null || input.length() == 0) {
-            return "Invalid Equation: No input given";
-        }
 
         Stack<Character> operations = new Stack<Character>();
         Stack<Integer> numbers = new Stack<Integer>();
 
         int current = 0;
-        while (current < equation.length()) {
-            int number = 0;
-            if (Character.isDigit(equation.charAt(current))) {
-                while (current < equation.length() && Character.isDigit(equation.charAt(current))) {
-                    number = number * 10 + Character.getNumericValue(equation.charAt(current));
-                    ++current;
-                }
-                numbers.push(number);
-            } else if (equation.charAt(current) == '-' && (current == 0 || !Character.isDigit(equation.charAt(current - 1)))) {
-                current++;
-                while (current < equation.length() && Character.isDigit(equation.charAt(current))) {
-                    number = number * 10 + Character.getNumericValue(equation.charAt(current));
-                    ++current;
-                }
-                numbers.push(-number);
-            } else {
-                char operation = equation.charAt(current);
-                if (operations.isEmpty()) {
-                    operations.push(operation);
-                    ++current;
-                } else if (operation == '(') {
-                    operations.push(operation);
-                    ++current;
-                } else if (operation == ')') {
-                    while (operations.peek() != '(') {
-                        calculateHelper(numbers, operations);
+        try {
+            while (current < equation.length()) {
+                int number = 0;
+                if (Character.isDigit(equation.charAt(current))) {
+                    while (current < equation.length() && Character.isDigit(equation.charAt(current))) {
+                        number = number * 10 + Character.getNumericValue(equation.charAt(current));
+                        ++current;
                     }
-                    operations.pop();
-                    ++current;
-                } else if (operation == '*' || operation == '/') {
-                    char lastOperation = operations.peek();
-                    if (lastOperation == '(') {
+                    numbers.push(number);
+                } else if (equation.charAt(current) == '-' && (current == 0 || !Character.isDigit(equation.charAt(current - 1)))) {
+                    current++;
+                    while (current < equation.length() && Character.isDigit(equation.charAt(current))) {
+                        number = number * 10 + Character.getNumericValue(equation.charAt(current));
+                        ++current;
+                    }
+                    numbers.push(-number);
+                } else {
+                    char operation = equation.charAt(current);
+                    if (operations.isEmpty()) {
                         operations.push(operation);
                         ++current;
-                    } else if (lastOperation == '*' || lastOperation == '/') {
-                        calculateHelper(numbers, operations);
-                    } else if (lastOperation == '+' || lastOperation == '-') {
+                    } else if (operation == '(') {
                         operations.push(operation);
-                        current++;
+                        ++current;
+                    } else if (operation == ')') {
+                        while (operations.peek() != '(') {
+                            calculateHelper(numbers, operations);
+                        }
+                        operations.pop();
+                        ++current;
+                    } else if (operation == '*' || operation == '/') {
+                        char lastOperation = operations.peek();
+                        if (lastOperation == '(') {
+                            operations.push(operation);
+                            ++current;
+                        } else if (lastOperation == '*' || lastOperation == '/') {
+                            calculateHelper(numbers, operations);
+                        } else if (lastOperation == '+' || lastOperation == '-') {
+                            operations.push(operation);
+                            current++;
+                        } else {
+                            return "Invalid Expression";
+                        }
+                    } else if (operation == '+' || operation == '-') {
+                        char lastOperation = operations.peek();
+                        if (lastOperation == '(') {
+                            operations.push(operation);
+                            ++current;
+                        } else {
+                            calculateHelper(numbers, operations);
+                        }
                     } else {
                         return "Invalid Expression";
                     }
-                } else if (operation == '+' || operation == '-') {
-                    char lastOperation = operations.peek();
-                    if (lastOperation == '(') {
-                        operations.push(operation);
-                        ++current;
-                    } else {
-                        calculateHelper(numbers, operations);
-                    }
-                } else {
-                    return "Invalid Expression";
                 }
             }
-        }
 
-        while (!operations.isEmpty()) {
-            calculateHelper(numbers, operations);
-        }
+            while (!operations.isEmpty()) {
+                calculateHelper(numbers, operations);
+            }
 
-        return numbers.peek().toString();
+            return numbers.peek().toString();
+        } catch (Exception ignored) {
+            return "Invalid Expression";
+        }
     }
 
     void calculateHelper(Stack<Integer> numbers, Stack<Character> operations) {
@@ -140,6 +141,7 @@ class ClientHandler extends Thread {
             }
             socket.close();
         } catch (Exception e) {
+            System.out.println(e);
             System.out.println("Connection with " + username + " closed unexpectedly");
         }
 
