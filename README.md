@@ -3,11 +3,11 @@
 ## Running the Project from CLI
 
 1. Compile  
-`javac src/CalcClient.java src/CalcServer.java `
+`make all`
    
 2. Run Server  
-`java CalcServer`
+`make runserver`
    
 3. Run Client (as many times as you want)  
-`java CalcClient`
+`make runclient`
 
