@@ -1,3 +1,6 @@
+/*
+    File that handles client functionalities
+*/
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.net.Socket;
@@ -30,6 +33,7 @@ class CalcClient {
 
             if (loginResponse.startsWith("ACC:")) {
                 System.out.println("Your username '" + input + "' was accepted by the server!\n");
+                System.out.println("Welcome to the calculator, This calculator supports...\nAddition: +  \nMultiplication: * \nSubtraction: - \nDivision: \\ \nGrouping of operations: ()\n");
                 username = input; // break condition
             } else {
                 System.out.println("Your username '" + input + "' was not accepted by the server. Please try a " +

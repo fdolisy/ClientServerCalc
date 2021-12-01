@@ -2,6 +2,7 @@ all: server client
 
 clean:
 	rm -rf bin
+	rm log.txt
 
 server: src/CalcServer.java
 	javac -d bin src/CalcServer.java
