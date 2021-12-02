@@ -16,6 +16,10 @@ class CalcClient {
         DataOutputStream outToServer = null;
         DataInputStream inFromServer = null;
 
+        // Get a server to connect to, from the user
+        System.out.println("Enter the server's host IP (ex: 127.0.0.1):");
+        String host = in.nextLine();
+
         // Get a valid username that is not currently being tracked by the server
         String username = null;
         while (username == null) {
@@ -23,7 +27,12 @@ class CalcClient {
             input = in.nextLine();
 
             // Establish connection with server
-            clientSocket = new Socket("127.0.0.1", 6789);
+            try {
+                clientSocket = new Socket(host, 6789);
+            } catch (Exception e) {
+                System.out.println("Error connecting to server: " + e);
+                return;
+            }
             outToServer = new DataOutputStream(clientSocket.getOutputStream());
             inFromServer = new DataInputStream(clientSocket.getInputStream());
 
